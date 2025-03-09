@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie List CRUD</title>
+    <link href="./output.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"
+    />
+  </head>
+  <body>
+    <body class="bg-gray-900 text-white p-6">
+      <div class="max-w-4xl mx-auto p-6">
+        <div class="flex items-center justify-between mb-6">
+          <!-- Tombol Go to Home -->
+          <button
+            onclick="window.location.href='home.html'"
+            class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded shadow-lg"
+          >
+            Go to Home
+          </button>
+
+          <!-- Spacer agar judul tetap di tengah -->
+          <div class="flex-1"></div>
+
+          <!-- Judul Movie List tetap di tengah -->
+          <h1 class="text-3xl font-bold text-center flex-1 mr-8">Movie List</h1>
+
+          <!-- Spacer agar tombol tidak bergeser -->
+          <div class="flex-1"></div>
+        </div>
+
+        <!-- Swiper Slider -->
+        <div class="swiper mySwiper mb-6">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <img
+                src="/img/1.jpg"
+                alt="Movie Image"
+                class="w-full rounded-lg"
+              />
+            </div>
+            <div class="swiper-slide">
+              <img
+                src="/img/2.jpg"
+                alt="Cinema Image"
+                class="w-full rounded-lg"
+              />
+            </div>
+            <div class="swiper-slide">
+              <img
+                src="/img/3.jpg"
+                alt="Hollywood Image"
+                class="w-full rounded-lg"
+              />
+            </div>
+          </div>
+          <div class="swiper-pagination"></div>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
+        </div>
+
+        <form id="movieForm" class="grid grid-cols-2 gap-4 mb-6">
+          <input
+            type="text"
+            id="title"
+            placeholder="Title"
+            class="p-2 rounded bg-gray-800 border border-gray-700"
+            required
+          />
+          <input
+            type="text"
+            id="director"
+            placeholder="Director"
+            class="p-2 rounded bg-gray-800 border border-gray-700"
+            required
+          />
+          <input
+            type="number"
+            id="duration"
+            placeholder="Duration (min)"
+            class="p-2 rounded bg-gray-800 border border-gray-700"
+            required
+          />
+          <input
+            type="number"
+            id="year"
+            placeholder="Year"
+            class="p-2 rounded bg-gray-800 border border-gray-700"
+            required
+          />
+          <input
+            type="text"
+            id="genre"
+            placeholder="Genre"
+            class="p-2 rounded bg-gray-800 border border-gray-700"
+            required
+          />
+          <input
+            type="number"
+            step="0.1"
+            id="rating"
+            placeholder="Rating (0-10)"
+            class="p-2 rounded bg-gray-800 border border-gray-700"
+            required
+          />
+          <button
+            type="submit"
+            class="col-span-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded"
+          >
+            Add Movie
+          </button>
+        </form>
+
+        <div id="movieList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+      <script>
+        const swiper = new Swiper(".mySwiper", {
+          loop: true,
+          autoplay: { delay: 3000, disableOnInteraction: false },
+          pagination: { el: ".swiper-pagination", clickable: true },
+          navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+          },
+        });
+
+        // const movieForm = document.getElementById("movieForm");
+        // const movieList = document.getElementById("movieList");
+        // let movies = JSON.parse(localStorage.getItem("movies")) || [];
+
+        // function saveMovies() {
+        //   localStorage.setItem("movies", JSON.stringify(movies));
+        // }
+
+        // movieForm.addEventListener("submit", function (event) {
+        //   event.preventDefault();
+        //   const movie = {
+        //     id: Date.now(),
+        //     title: document.getElementById("title").value,
+        //     director: document.getElementById("director").value,
+        //     duration: document.getElementById("duration").value,
+        //     year: document.getElementById("year").value,
+        //     genre: document.getElementById("genre").value,
+        //     rating: document.getElementById("rating").value,
+        //   };
+        //   movies.push(movie);
+        //   saveMovies();
+        //   renderMovies();
+        //   movieForm.reset();
+        // });
+
+        // function renderMovies() {
+        //   movieList.innerHTML = "";
+        //   movies.forEach((movie) => {
+        //     const movieCard = document.createElement("div");
+        //     movieCard.className = "bg-gray-800 p-4 rounded-lg shadow-lg";
+        //     movieCard.innerHTML = `
+        //       <h2 class="text-xl font-bold">${movie.title}</h2>
+        //       <p class="text-gray-400">Director: ${movie.director}</p>
+        //       <p class="text-gray-400">Duration: ${movie.duration} min</p>
+        //       <p class="text-gray-400">Year: ${movie.year}</p>
+        //       <p class="text-gray-400">Genre: ${movie.genre}</p>
+        //       <p class="text-yellow-400">⭐ ${movie.rating}</p>
+        //       <div class="mt-2 flex space-x-2">
+        //         <button onclick="editMovie(${movie.id})" class="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded">Edit</button>
+        //         <button onclick="deleteMovie(${movie.id})" class="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded">Delete</button>
+        //       </div>
+        //     `;
+        //     movieList.appendChild(movieCard);
+        //   });
+        // }
+
+        // function editMovie(id) {
+        //   const movie = movies.find((m) => m.id === id);
+        //   document.getElementById("title").value = movie.title;
+        //   document.getElementById("director").value = movie.director;
+        //   document.getElementById("duration").value = movie.duration;
+        //   document.getElementById("year").value = movie.year;
+        //   document.getElementById("genre").value = movie.genre;
+        //   document.getElementById("rating").value = movie.rating;
+        //   movies = movies.filter((m) => m.id !== id);
+        //   saveMovies();
+        //   renderMovies();
+        // }
+
+        // function deleteMovie(id) {
+        //   movies = movies.filter((m) => m.id !== id);
+        //   saveMovies();
+        //   renderMovies();
+        // }
+
+        // document.addEventListener("DOMContentLoaded", renderMovies);
+      </script>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const API_BASE_URL = "https://api-listfilm.vercel.app/movies";
+
+          // Ambil ID film yang akan diedit dari localStorage
+          const editMovieId = localStorage.getItem("editMovie");
+
+          if (editMovieId) {
+            fetch(`${API_BASE_URL}/${editMovieId}`)
+              .then((res) => res.json())
+              .then((editMovie) => {
+                document.getElementById("title").value = editMovie.title || "";
+                document.getElementById("director").value =
+                  editMovie.director || "";
+                document.getElementById("duration").value =
+                  editMovie.duration || "";
+                document.getElementById("year").value = editMovie.year || "";
+                document.getElementById("genre").value = editMovie.genre || "";
+                document.getElementById("rating").value =
+                  editMovie.rating || "";
+              })
+              .catch((error) => console.error("Error fetching movie:", error));
+          }
+
+          document
+            .getElementById("movieForm")
+            .addEventListener("submit", function (event) {
+              event.preventDefault();
+
+              const updatedMovie = {
+                title: document.getElementById("title").value,
+                director: document.getElementById("director").value,
+                duration: document.getElementById("duration").value,
+                year: document.getElementById("year").value,
+                genre: document.getElementById("genre").value,
+                rating: document.getElementById("rating").value,
+              };
+
+              if (editMovieId) {
+                // PUT Request untuk Update Data
+                fetch(`${API_BASE_URL}/${editMovieId}`, {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(updatedMovie),
+                })
+                  .then(() => {
+                    localStorage.removeItem("editMovie"); // Hapus editMovie dari localStorage
+                    window.location.href = "home.html";
+                  })
+                  .catch((error) =>
+                    console.error("Error updating movie:", error)
+                  );
+              } else {
+                // POST Request untuk Tambah Data
+                fetch(API_BASE_URL, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(updatedMovie),
+                })
+                  .then(() => {
+                    window.location.href = "home.html";
+                  })
+                  .catch((error) =>
+                    console.error("Error adding movie:", error)
+                  );
+              }
+            });
+        });
+      </script>
+    </body>
+  </body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./output.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"
+    />
+  </head>
+  <body class="bg-gray-900 text-white">
+    <!-- Navbar -->
+    <header class="bg-gray-800 px-6 py-4 flex justify-between items-center">
+      <h1 class="text-4xl font-bold text-center mx-auto my-3">
+        <span class="text-red-500">Movie</span>.<span class="text-white"
+          >Kuy</span
+        >
+      </h1>
+    </header>
+
+    <!-- Hero Section with Swiper -->
+    <div class="swiper mySwiper pt-0 h-[500px]">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide relative">
+          <img src="/img/1.jpg" class="w-full h-full object-cover" />
+          <div class="absolute bottom-10 left-10 text-white">
+            <h2 class="text-4xl font-bold">The Jungle Book</h2>
+            <p class="text-lg">Adventure | Drama | Fantasy</p>
+          </div>
+        </div>
+        <div class="swiper-slide relative">
+          <img src="/img/2.jpg" class="w-full h-full object-cover" />
+          <div class="absolute bottom-10 left-10 text-white">
+            <h2 class="text-4xl font-bold">Avanger Endgame</h2>
+            <p class="text-lg">Adventure | Family | Fantasy</p>
+          </div>
+        </div>
+        <div class="swiper-slide relative">
+          <img src="/img/3.jpg" class="w-full h-full object-cover" />
+          <div class="absolute bottom-10 left-10 text-white">
+            <h2 class="text-4xl font-bold">Assassin's Creed</h2>
+            <p class="text-lg">Action | Adventure | Fantasy</p>
+          </div>
+        </div>
+      </div>
+      <div class="swiper-pagination"></div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div>
+
+    <div class="container mx-auto max-w-6xl p-6">
+      <div class="pt-10">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-3xl font-bold">Daftar List Film</h2>
+          <button
+            onclick="addMovie()"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+          >
+            Tambah Movie
+          </button>
+        </div>
+        <div
+          id="movieContainer"
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+        ></div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const movieContainer = document.getElementById("movieContainer");
+        const API_BASE_URL = "https://api-listfilm.vercel.app/movies";
+
+        async function fetchMovies() {
+          try {
+            const response = await fetch(API_BASE_URL);
+            const movies = await response.json();
+            renderMovies(movies);
+          } catch (error) {
+            console.error("Error fetching movies:", error);
+          }
+        }
+
+        function renderMovies(movies) {
+          movieContainer.innerHTML = "";
+          movies.forEach((movie) => {
+            const movieCard = document.createElement("div");
+            movieCard.className =
+              "bg-gray-800 p-6 rounded-lg shadow-lg text-white";
+            movieCard.innerHTML = `
+            <h2 class="text-xl font-bold mb-2">${movie.title}</h2>
+            <p class="text-gray-400">Director: ${movie.director}</p>
+            <p class="text-gray-400">Duration: ${movie.duration} min</p>
+            <p class="text-gray-400">Year: ${movie.year}</p>
+            <p class="text-gray-400">Genre: ${movie.genre}</p>
+            <div class="flex items-center mt-2">
+              <span class="text-yellow-400 text-xl">⭐</span>
+              <span class="text-yellow-400 font-bold ml-1">${movie.rating}</span>
+            </div>
+            <div class="mt-4 flex justify-between">
+              <button onclick="editMovie('${movie.id}')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full mr-2">Edit</button>
+              <button onclick="deleteMovie('${movie.id}')" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded w-full">Delete</button>
+            </div>
+          `;
+            movieContainer.appendChild(movieCard);
+          });
+        }
+
+        window.addMovie = function () {
+          localStorage.removeItem("editMovie");
+          window.location.href = "index.html";
+        };
+
+        window.editMovie = function (id) {
+          console.log("ID yang diklik:", id); // Debugging log
+          localStorage.setItem("editMovie", id);
+          window.location.href = "index.html"; // Buka halaman form
+          console.log(
+            "ID dari localStorage:",
+            localStorage.getItem("editMovie")
+          );
+        };
+
+        window.deleteMovie = async function (id) {
+          try {
+            await fetch(`${API_BASE_URL}/${id}`, { method: "DELETE" });
+            fetchMovies();
+          } catch (error) {
+            console.error("Error deleting movie:", error);
+          }
+        };
+
+        fetchMovies();
+      });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+    <script>
+      const swiper = new Swiper(".mySwiper", {
+        loop: true,
+        autoplay: { delay: 3000, disableOnInteraction: false },
+        pagination: { el: ".swiper-pagination", clickable: true },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      });
+    </script>
+  </body>
+</html>
